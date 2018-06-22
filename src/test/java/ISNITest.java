@@ -15,7 +15,7 @@ public class ISNITest {
   @Test
   public void searchWithFullName() throws IOException {
     String str = "Mozart, Wolfgang Amadeus";
-    ISNIRecord r = ISNI.getRecord(str);
+    ISNIRecord r = ISNI.search(str);
     assertEquals(MOZART_URI, r.uri);
     assertEquals("Mozart", r.personalNames.get(0).surname);
     assertEquals("http://fr.dbpedia.org/resource/Wolfgang_Amadeus_Mozart", r.getDBpediaUri("fr"));
@@ -23,9 +23,22 @@ public class ISNITest {
   }
 
   @Test
+  public void getByISNIUri() throws IOException {
+    ISNIRecord r = ISNI.get(MOZART_URI);
+    assertEquals("Mozart", r.personalNames.get(0).surname);
+  }
+
+  @Test
+  public void getByISNICode() throws IOException {
+    ISNIRecord r = ISNI.get(BEETHOVEN_ID);
+    assertEquals("Beethoven", r.personalNames.get(0).surname);
+  }
+
+
+  @Test
   public void searchWithNameAndDate() throws IOException {
     String str = "Beethoven, Ludwig van";
-    ISNIRecord r = ISNI.getRecord(str, "1770");
+    ISNIRecord r = ISNI.search(str, "1770");
     assertEquals(BEETHOVEN_ID, r.id);
     assertEquals("Beethoven", r.personalNames.get(0).surname);
     assertEquals("1770", r.getBirthYear());
@@ -35,7 +48,7 @@ public class ISNITest {
   @Test
   public void searchWithIncompleteName() throws IOException {
     String str = "Wolfgang Mozart";
-    ISNIRecord r = ISNI.getRecord(str);
+    ISNIRecord r = ISNI.search(str);
     String uri = r.uri;
     assertEquals(MOZART_URI, uri);
   }
@@ -43,12 +56,12 @@ public class ISNITest {
   @Test
   public void searchWithAlternateName() throws IOException {
     String str = "W. A. Mozart";
-    ISNIRecord r = ISNI.getRecord(str);
+    ISNIRecord r = ISNI.search(str);
     String uri = r.uri;
     assertEquals(MOZART_URI, uri);
 
     str = "Mozart, Volfango Amedeo";
-    r = ISNI.getRecord(str);
+    r = ISNI.search(str);
     uri = r.uri;
     assertEquals(MOZART_URI, uri);
   }
@@ -57,7 +70,7 @@ public class ISNITest {
   @Test
   public void beethovenIsNotMozart() throws IOException {
     String str = "Beethoven";
-    ISNIRecord r = ISNI.getRecord(str);
+    ISNIRecord r = ISNI.search(str);
     String uri = r.uri;
     assertNotEquals(MOZART_URI, uri);
   }
@@ -65,7 +78,7 @@ public class ISNITest {
   @Test
   public void unexistingPerson() throws IOException {
     String str = "Brazov, Ajeje";
-    ISNIRecord r = ISNI.getRecord(str);
+    ISNIRecord r = ISNI.search(str);
     assertNull(r);
   }
 
