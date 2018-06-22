@@ -22,7 +22,7 @@ public class ISNI {
   public static ISNIRecord getRecord(String name, String date) throws IOException {
     if (name.isEmpty()) throw new RuntimeException("Empty name for querying org.doremus.isnimatcher.ISNI");
 
-    String query = "pica.nw = " + name;
+    String query = "pica.nw = " + name.replaceAll("\\.", " ");
     int n = date == null ? 1 : 100;
 
     try {
@@ -40,7 +40,6 @@ public class ISNI {
         throw new IOException(response.getStatus() + " | " + response.getStatusText());
 
       String body = response.getBody();
-
       List<ISNIRecord> records = new ArrayList<>();
       for (String s : splitBody(body)) {
         try {
@@ -51,11 +50,12 @@ public class ISNI {
         }
       }
 
-      if (date == null)
-        return records.get(0);
+      if (records.size() == 0) return null;
+
+      if (date == null) return records.get(0);
 
       return records.stream()
-              .filter(r -> r.getBirthYear().equals(date))
+              .filter(r -> date.equals(r.getBirthYear()))
               .findFirst()
               .orElse(null);
 

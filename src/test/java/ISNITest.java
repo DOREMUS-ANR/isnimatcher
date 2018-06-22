@@ -42,9 +42,14 @@ public class ISNITest {
 
   @Test
   public void searchWithAlternateName() throws IOException {
-    String str = "W. A. Mozart\n";
+    String str = "W. A. Mozart";
     ISNIRecord r = ISNI.getRecord(str);
     String uri = r.uri;
+    assertEquals(MOZART_URI, uri);
+
+    str = "Mozart, Volfango Amedeo";
+    r = ISNI.getRecord(str);
+    uri = r.uri;
     assertEquals(MOZART_URI, uri);
   }
 
