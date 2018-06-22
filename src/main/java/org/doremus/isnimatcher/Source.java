@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Source {
   private static final String MUSICBRAINZ_BASE = "https://musicbrainz.org/artist/";
   private static final String BNF_BASE = "http://catalogue.bnf.fr/ark:/12148/cb";
+  private static final String VIAF_BASE = "https://viaf.org/viaf/";
 
   @XmlElement(name = "codeOfSource")
   public String codeOfSource;
@@ -23,5 +24,9 @@ public class Source {
 
   public String asBNFUri() {
     return BNF_BASE + sourceIdentifier + "b";
+  }
+
+  public String asViafURI() {
+    return VIAF_BASE + sourceIdentifier;
   }
 }

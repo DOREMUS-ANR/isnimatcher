@@ -32,10 +32,23 @@ public class ISNIRecord {
   public List<ExternalInformation> externalInformations;
 
   @XmlElement(name = "source")
-  public List<Source> sources;
+  private List<Source> sources1;
+
+  @XmlElement(name = "sources")
+  private List<Source> sources2;
+
+  private List<Source> source = null;
 
   private String body;
 
+  public List<Source> getSources(){
+    if (source == null) {
+      source = sources1;
+      if(sources1 ==null) source = sources2;
+      else source.addAll(sources2);
+    }
+    return source;
+  }
 
   private void setBody(String body) {
     this.body = body;
@@ -84,6 +97,10 @@ public class ISNIRecord {
   public String getViafURI() {
     for (ExternalInformation ex : externalInformations)
       if (ex.isType("viaf")) return ex.URI;
+
+    for (Source s : getSources())
+      if ("VIAF".equals(s.codeOfSource)) return s.asViafURI();
+
     return null;
   }
 
@@ -130,7 +147,7 @@ public class ISNIRecord {
   }
 
   public String getMusicBrainzUri() {
-    for (Source s : sources) {
+    for (Source s : getSources()) {
       if ("MUBZ".equals(s.codeOfSource))
         return s.asMusicBrainzURI();
     }
@@ -138,7 +155,7 @@ public class ISNIRecord {
   }
 
   public String getBNFUri() {
-    for (Source s : sources) {
+    for (Source s : getSources()) {
       if ("BNF".equals(s.codeOfSource))
         return s.asBNFUri();
     }

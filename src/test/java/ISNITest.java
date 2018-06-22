@@ -36,6 +36,12 @@ public class ISNITest {
   }
 
   @Test
+  public void getViaf() throws IOException {
+    ISNIRecord r = ISNI.get("000000007368351X");
+    assertEquals("https://viaf.org/viaf/19620875", r.getViafURI());
+  }
+
+  @Test
   public void searchWithNameAndDate() throws IOException {
     String str = "Beethoven, Ludwig van";
     ISNIRecord r = ISNI.search(str, "1770");
