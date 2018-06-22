@@ -1,3 +1,5 @@
+package org.doremus.isnimatcher;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,4 +29,13 @@ public class PersonalName {
   public String subsourceIdentifier;
 
 
+  public String getBirthYear() {
+    if (marcDate == null || marcDate.isEmpty()) return null;
+    return marcDate.split("-")[0];
+  }
+
+  public String getDeathYear() {
+    if (marcDate == null || marcDate.isEmpty()) return null;
+    return marcDate.split("-")[1];
+  }
 }
