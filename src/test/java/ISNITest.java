@@ -2,6 +2,7 @@ import org.doremus.isnimatcher.ISNI;
 import org.doremus.isnimatcher.ISNIRecord;
 import org.junit.Test;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -33,7 +34,6 @@ public class ISNITest {
     ISNIRecord r = ISNI.get(BEETHOVEN_ID);
     assertEquals("Beethoven", r.personalNames.get(0).surname);
   }
-
 
   @Test
   public void searchWithNameAndDate() throws IOException {
@@ -80,6 +80,16 @@ public class ISNITest {
     String str = "Brazov, Ajeje";
     ISNIRecord r = ISNI.search(str);
     assertNull(r);
+  }
+
+
+  @Test
+  public void writeAndLoad() throws IOException, JAXBException {
+    ISNIRecord r = ISNI.get(MOZART_URI);
+    String dst = "test/test.xml";
+    r.save(dst);
+    ISNIRecord s = ISNIRecord.fromFile(dst);
+    assertEquals(r.uri, s.uri);
   }
 
 }

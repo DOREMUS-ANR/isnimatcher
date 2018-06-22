@@ -82,7 +82,7 @@ public class ISNI {
     }
   }
 
-  private static List<String> splitBody(String body) {
+  static List<String> splitBody(String body) {
     List<String> records = new ArrayList<>();
     if (body.isEmpty()) return records;
 

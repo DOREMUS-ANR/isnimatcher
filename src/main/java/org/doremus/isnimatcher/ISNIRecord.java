@@ -7,9 +7,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @XmlRootElement(name = "ISNIAssigned")
@@ -30,6 +33,21 @@ public class ISNIRecord {
   @XmlElement(name = "source")
   public List<Source> sources;
 
+  private String body;
+
+
+  private void setBody(String body) {
+    this.body = body;
+  }
+
+  public static ISNIRecord fromFile(String fileName) throws IOException, JAXBException {
+    String fileContent = new String(Files.readAllBytes(Paths.get(fileName)));
+
+    if(!fileContent.startsWith("<ISNIAssigned>"))
+      fileContent = ISNI.splitBody(fileContent).get(0);
+
+    return fromString(fileContent);
+  }
 
   public static ISNIRecord fromUri(URL uri) throws JAXBException {
     JAXBContext jaxbContext = JAXBContext.newInstance(ISNIRecord.class);
@@ -52,8 +70,11 @@ public class ISNIRecord {
     record = record.replaceAll("</?personOrFiction>", "");
 
     StringReader reader = new StringReader(record);
-    return (ISNIRecord) unmarshaller.unmarshal(reader);
+    ISNIRecord rec = (ISNIRecord) unmarshaller.unmarshal(reader);
+    rec.setBody(record);
+    return rec;
   }
+
 
   private String getViafURI() {
     for (ExternalInformation ex : externalInformations)
@@ -135,5 +156,10 @@ public class ISNIRecord {
       if (dy != null) return dy;
     }
     return null;
+  }
+
+  public void save(String destination) throws IOException {
+    byte[] strToBytes = this.body.getBytes();
+    Files.write(Paths.get(destination), strToBytes);
   }
 }
