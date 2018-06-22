@@ -12,6 +12,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -41,9 +42,13 @@ public class ISNIRecord {
   }
 
   public static ISNIRecord fromFile(String fileName) throws IOException, JAXBException {
-    String fileContent = new String(Files.readAllBytes(Paths.get(fileName)));
+    return fromFile(Paths.get(fileName));
+  }
 
-    if(!fileContent.startsWith("<ISNIAssigned>"))
+  public static ISNIRecord fromFile(Path file) throws IOException, JAXBException {
+    String fileContent = new String(Files.readAllBytes(file));
+
+    if (!fileContent.startsWith("<ISNIAssigned>"))
       fileContent = ISNI.splitBody(fileContent).get(0);
 
     return fromString(fileContent);
@@ -141,7 +146,6 @@ public class ISNIRecord {
   }
 
 
-
   public String getBirthYear() {
     for (PersonalName n : personalNames) {
       String by = n.getBirthYear();
@@ -159,7 +163,11 @@ public class ISNIRecord {
   }
 
   public void save(String destination) throws IOException {
+    this.save(Paths.get(destination));
+  }
+
+  public void save(Path destination) throws IOException {
     byte[] strToBytes = this.body.getBytes();
-    Files.write(Paths.get(destination), strToBytes);
+    Files.write(destination, strToBytes);
   }
 }
