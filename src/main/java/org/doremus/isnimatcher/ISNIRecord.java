@@ -81,25 +81,25 @@ public class ISNIRecord {
   }
 
 
-  private String getViafURI() {
+  public String getViafURI() {
     for (ExternalInformation ex : externalInformations)
       if (ex.isType("viaf")) return ex.URI;
     return null;
   }
 
-  private String getDiscogsURI() {
+  public String getDiscogsURI() {
     for (ExternalInformation ex : externalInformations)
       if (ex.isType("discogs")) return ex.URI;
     return null;
   }
 
-  private String getWikidataURI() {
+  public String getWikidataURI() {
     for (ExternalInformation ex : externalInformations)
       if (ex.isType("wikidata")) return ex.URI;
     return null;
   }
 
-  private String getMuziekwebURI() {
+  public String getMuziekwebURI() {
     for (ExternalInformation ex : externalInformations)
       if (ex.isType("muziekweb")) return ex.URI;
     return null;
