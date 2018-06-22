@@ -14,6 +14,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name = "ISNIAssigned")
@@ -29,7 +30,7 @@ public class ISNIRecord {
   public List<PersonalName> personalNames;
 
   @XmlElement(name = "externalInformation")
-  public List<ExternalInformation> externalInformations;
+  private List<ExternalInformation> externalInformations;
 
   @XmlElement(name = "source")
   private List<Source> sources1;
@@ -48,6 +49,12 @@ public class ISNIRecord {
       else source.addAll(sources2);
     }
     return source;
+  }
+
+  public List<ExternalInformation> getExternalInformations(){
+    if(externalInformations == null)
+      externalInformations = new ArrayList<>();
+    return externalInformations;
   }
 
   private void setBody(String body) {
@@ -95,7 +102,7 @@ public class ISNIRecord {
 
 
   public String getViafURI() {
-    for (ExternalInformation ex : externalInformations)
+    for (ExternalInformation ex : getExternalInformations())
       if (ex.isType("viaf")) return ex.URI;
 
     for (Source s : getSources())
@@ -105,25 +112,25 @@ public class ISNIRecord {
   }
 
   public String getDiscogsURI() {
-    for (ExternalInformation ex : externalInformations)
+    for (ExternalInformation ex : getExternalInformations())
       if (ex.isType("discogs")) return ex.URI;
     return null;
   }
 
   public String getWikidataURI() {
-    for (ExternalInformation ex : externalInformations)
+    for (ExternalInformation ex : getExternalInformations())
       if (ex.isType("wikidata")) return ex.URI;
     return null;
   }
 
   public String getMuziekwebURI() {
-    for (ExternalInformation ex : externalInformations)
+    for (ExternalInformation ex : getExternalInformations())
       if (ex.isType("muziekweb")) return ex.URI;
     return null;
   }
 
   private ExternalInformation getWikipedia(String lang) {
-    for (ExternalInformation ex : externalInformations) {
+    for (ExternalInformation ex : getExternalInformations()) {
       if (ex.isType("Wikipedia") && lang.equalsIgnoreCase(ex.getLang()))
         return ex;
     }
