@@ -42,17 +42,17 @@ public class ISNIRecord {
 
   private String body;
 
-  public List<Source> getSources(){
+  public List<Source> getSources() {
     if (source == null) {
       source = sources1;
-      if(sources1 ==null) source = sources2;
+      if (sources1 == null) source = sources2;
       else source.addAll(sources2);
     }
     return source;
   }
 
-  public List<ExternalInformation> getExternalInformations(){
-    if(externalInformations == null)
+  public List<ExternalInformation> getExternalInformations() {
+    if (externalInformations == null)
       externalInformations = new ArrayList<>();
     return externalInformations;
   }
@@ -135,6 +135,10 @@ public class ISNIRecord {
         return ex;
     }
     return null;
+  }
+
+  public String getWikipediaUri() {
+    return getWikipediaUri("en");
   }
 
   public String getWikipediaUri(String lang) {
