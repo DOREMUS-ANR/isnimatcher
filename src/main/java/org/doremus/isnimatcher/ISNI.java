@@ -55,7 +55,7 @@ public class ISNI {
     if (date == null) return records.get(0);
     String _date = cleanDate(date);
 
-    for (ISNIRecord r : records) r.save("test/" + r.id + ".xml");
+    // for (ISNIRecord r : records) r.save("test/" + r.id + ".xml");
     return records.stream()
             .filter(r -> r.hasName(forename, surname, true))
             .filter(r -> dateMatch(_date, r.getBirthYear()))
