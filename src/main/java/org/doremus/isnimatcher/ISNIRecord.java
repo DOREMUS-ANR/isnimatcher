@@ -26,6 +26,9 @@ public class ISNIRecord {
   @XmlElement(name = "isniURI")
   public String uri;
 
+  @XmlElement(name = "dataConfidence")
+  public int confidence;
+
   @XmlElement(name = "personalName")
   public List<PersonalName> personalNames;
 
@@ -198,4 +201,21 @@ public class ISNIRecord {
     byte[] strToBytes = this.body.getBytes();
     Files.write(destination, strToBytes);
   }
+
+  public boolean hasName(String forename, String surname) {
+    return hasName(forename, surname, false);
+  }
+
+  public boolean hasName(String forename, String surname, boolean _default) {
+    if (surname == null) return false;
+    if (forename == null) return _default;
+
+    for (PersonalName pn : personalNames) {
+      if (surname.equalsIgnoreCase(pn.surname) &&
+              forename.equalsIgnoreCase(pn.forename))
+        return true;
+    }
+    return false;
+  }
+
 }

@@ -50,6 +50,28 @@ public class ISNITest {
     assertEquals("1770", r.getBirthYear());
   }
 
+  @Test
+  public void searchWithNameAndIncompleteDate() throws IOException {
+    ISNIRecord r1 = ISNI.search("Martin", "Walter", "19..");
+    ISNIRecord r2 = ISNI.search("Walter", "Martin", "19..");
+    assertNotEquals(r1.id, r2.id);
+  }
+
+
+  @Test
+  public void beforeChrist() throws IOException {
+    ISNIRecord r = ISNI.get("0000000123748095"); // Aristotle
+    assertEquals("-0384", r.getBirthYear());
+    assertEquals("-0322", r.getDeathYear());
+  }
+
+  @Test
+  public void beforeAfterChrist() throws IOException {
+    ISNIRecord r = ISNI.get("0000000120370699"); // Jesus Christ
+    assertEquals("-4", r.getBirthYear());
+    assertEquals("29", r.getDeathYear());
+  }
+
 
   @Test
   public void searchWithIncompleteName() throws IOException {
