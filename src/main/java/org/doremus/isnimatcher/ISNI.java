@@ -8,6 +8,7 @@ import com.mashape.unirest.request.HttpRequest;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,9 @@ public class ISNI {
   private final static String END_TAG = "</ISNIAssigned>";
 
   private final static Pattern FLEX_DATE_PATTERN = Pattern.compile("[\\d?.]{0,4}");
+
+  private static boolean debug = false;
+  private static boolean bestViafBehavior = false;
 
   public static ISNIRecord get(String id) throws IOException {
     if (id.startsWith(ISNI_BASE))
@@ -55,12 +59,34 @@ public class ISNI {
     if (date == null) return records.get(0);
     String _date = cleanDate(date);
 
-    // for (ISNIRecord r : records) r.save("test/" + r.id + ".xml");
-    return records.stream()
+    if (debug) {
+      System.out.println(records.size() + " records");
+      for (ISNIRecord r : records) r.save("test/" + r.id + ".xml");
+    }
+
+    ISNIRecord match = records.stream()
             .filter(r -> r.hasName(forename, surname, true))
             .filter(r -> dateMatch(_date, r.getBirthYear()))
             .findFirst()
             .orElse(null);
+
+    if (bestViafBehavior)
+      return getBestViaf(match, records);
+
+    return match;
+  }
+
+  private static ISNIRecord getBestViaf(ISNIRecord base, List<ISNIRecord> records) {
+    // Among the records with the same VIAF id, return the one with more links
+    if (base == null) return null;
+    String viaf = base.getViafURI();
+    if (viaf == null) return base;
+
+
+    return records.stream()
+            .filter(r -> viaf.equals(r.getViafURI()))
+            .max(Comparator.comparingInt(ISNIRecord::getLinksNumber))
+            .orElse(base);
   }
 
   private static boolean dateMatch(String expected, String actual) {
@@ -86,7 +112,7 @@ public class ISNI {
               .queryString("recordSchema", "isni-b")
               .queryString("maximumRecords", n);
 
-      // System.out.println(request.getUrl());
+      if (debug) System.out.println(request.getUrl());
 
       HttpResponse<String> response = request.asString();
 
@@ -131,4 +157,11 @@ public class ISNI {
   }
 
 
+  public static void setDebug(boolean debug) {
+    ISNI.debug = debug;
+  }
+
+  public static void setBestViafBehavior(boolean bestViafBehavior) {
+    ISNI.bestViafBehavior = bestViafBehavior;
+  }
 }

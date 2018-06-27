@@ -1,5 +1,6 @@
 import org.doremus.isnimatcher.ISNI;
 import org.doremus.isnimatcher.ISNIRecord;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBException;
@@ -12,6 +13,11 @@ import static org.junit.Assert.assertNull;
 public class ISNITest {
   private final static String MOZART_URI = "http://isni.org/isni/0000000121269154";
   private final static String BEETHOVEN_ID = "0000000121268987";
+
+  @Before
+  public void initialize() {
+    ISNI.setDebug(true);
+  }
 
   @Test
   public void searchWithFullName() throws IOException {
@@ -52,6 +58,21 @@ public class ISNITest {
 
   @Test
   public void searchWithNameAndIncompleteDate() throws IOException {
+    ISNIRecord r = ISNI.search("Robert Markham", "19..");
+    assertEquals("0000000107873128", r.id);
+  }
+
+  @Test
+  public void differentIdentities() throws IOException {
+    ISNI.setBestViafBehavior(true);
+    ISNIRecord r = ISNI.search("Guillaume Apollinaire", "1880");
+    assertEquals("0000000121371423", r.id);
+    ISNI.setBestViafBehavior(false);
+  }
+
+
+  @Test
+  public void searchWithNameSurname() throws IOException {
     ISNIRecord r1 = ISNI.search("Martin", "Walter", "19..");
     ISNIRecord r2 = ISNI.search("Walter", "Martin", "19..");
     assertNotEquals(r1.id, r2.id);

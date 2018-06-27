@@ -47,9 +47,9 @@ public class ISNIRecord {
 
   public List<Source> getSources() {
     if (source == null) {
-      source = sources1;
-      if (sources1 == null) source = sources2;
-      else source.addAll(sources2);
+      source = new ArrayList<>();
+      if (sources1 != null) source.addAll(sources1);
+      if (sources2 != null) source.addAll(sources2);
     }
     return source;
   }
@@ -110,6 +110,10 @@ public class ISNIRecord {
 
     for (Source s : getSources())
       if ("VIAF".equals(s.codeOfSource)) return s.asViafURI();
+
+    for (Source s : getSources())
+      if (s.sourceIdentifier.matches("VIAF \\d+"))
+        return Source.makeViafUri(s.sourceIdentifier.replace("VIAF ", ""));
 
     return null;
   }
@@ -218,4 +222,7 @@ public class ISNIRecord {
     return false;
   }
 
+  public int getLinksNumber() {
+    return this.getSources().size() + this.getExternalInformations().size();
+  }
 }

@@ -27,6 +27,11 @@ public class Source {
   }
 
   public String asViafURI() {
-    return VIAF_BASE + sourceIdentifier;
+    return makeViafUri(sourceIdentifier);
+  }
+
+  public static String makeViafUri(String viaf) {
+    return VIAF_BASE + viaf;
+
   }
 }
