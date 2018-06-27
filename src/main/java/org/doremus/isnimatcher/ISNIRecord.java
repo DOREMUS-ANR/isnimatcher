@@ -182,6 +182,7 @@ public class ISNIRecord {
 
 
   public String getBirthYear() {
+    if (personalNames == null) return null;
     for (PersonalName n : personalNames) {
       String by = n.getBirthYear();
       if (by != null) return by;
@@ -190,6 +191,7 @@ public class ISNIRecord {
   }
 
   public String getDeathYear() {
+    if (personalNames == null) return null;
     for (PersonalName n : personalNames) {
       String dy = n.getDeathYear();
       if (dy != null) return dy;
