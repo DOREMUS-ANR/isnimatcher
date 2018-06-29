@@ -112,7 +112,7 @@ public class ISNIRecord {
       if ("VIAF".equals(s.codeOfSource)) return s.asViafURI();
 
     for (Source s : getSources())
-      if (s.sourceIdentifier.matches("VIAF \\d+"))
+      if (s.sourceIdentifier != null && s.sourceIdentifier.matches("VIAF \\d+"))
         return Source.makeViafUri(s.sourceIdentifier.replace("VIAF ", ""));
 
     return null;
