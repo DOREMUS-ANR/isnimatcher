@@ -49,6 +49,7 @@ public class ExternalInformation {
   }
 
   public String getType() {
+    if (URI == null) return "unknown";
     if (URI.matches(WIKIPEDIA_REGEX))
       return "wikipedia";
     if (URI.matches(VIAF_REGEX))
