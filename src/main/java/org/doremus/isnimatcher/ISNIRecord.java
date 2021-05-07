@@ -215,8 +215,8 @@ public class ISNIRecord {
   public boolean hasName(String forename, String surname, boolean _default) {
     if (surname == null) return false;
     if (forename == null) return _default;
-
     for (PersonalName pn : personalNames) {
+
       if (surname.equalsIgnoreCase(pn.surname) &&
               forename.equalsIgnoreCase(pn.forename))
         return true;

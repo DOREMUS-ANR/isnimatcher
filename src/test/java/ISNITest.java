@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 
 public class ISNITest {
-  private final static String MOZART_URI = "http://isni.org/isni/0000000121269154";
+  private final static String MOZART_URI = "https://isni.org/isni/0000000121269154";
   private final static String BEETHOVEN_ID = "0000000121268987";
 
   @Before
@@ -32,18 +32,21 @@ public class ISNITest {
   @Test
   public void getByISNIUri() throws IOException {
     ISNIRecord r = ISNI.get(MOZART_URI);
+    assert r != null;
     assertEquals("Mozart", r.personalNames.get(0).surname);
   }
 
   @Test
   public void getByISNICode() throws IOException {
     ISNIRecord r = ISNI.get(BEETHOVEN_ID);
+    assert r != null;
     assertEquals("Beethoven", r.personalNames.get(0).surname);
   }
 
   @Test
   public void getViaf() throws IOException {
     ISNIRecord r = ISNI.get("000000007368351X");
+    assert r != null;
     assertEquals("https://viaf.org/viaf/19620875", r.getViafURI());
   }
 
@@ -73,8 +76,10 @@ public class ISNITest {
 
   @Test
   public void searchWithNameSurname() throws IOException {
-    ISNIRecord r1 = ISNI.search("Martin", "Walter", "19..");
-    ISNIRecord r2 = ISNI.search("Walter", "Martin", "19..");
+    ISNIRecord r1 = ISNI.search("Martin", "Walter", null);
+    ISNIRecord r2 = ISNI.search("Walter", "Martin", null);
+    assert r1 != null;
+    assert r2 != null;
     assertNotEquals(r1.id, r2.id);
   }
 
@@ -82,6 +87,7 @@ public class ISNITest {
   @Test
   public void beforeChrist() throws IOException {
     ISNIRecord r = ISNI.get("0000000123748095"); // Aristotle
+    assert r != null;
     assertEquals("-0384", r.getBirthYear());
     assertEquals("-0322", r.getDeathYear());
   }
@@ -89,6 +95,7 @@ public class ISNITest {
   @Test
   public void beforeAfterChrist() throws IOException {
     ISNIRecord r = ISNI.get("0000000120370699"); // Jesus Christ
+    assert r != null;
     assertEquals("-4", r.getBirthYear());
     assertEquals("29", r.getDeathYear());
   }
@@ -136,6 +143,7 @@ public class ISNITest {
   public void writeAndLoad() throws IOException, JAXBException {
     ISNIRecord r = ISNI.get(MOZART_URI);
     String dst = "test/test.xml";
+    assert r != null;
     r.save(dst);
     ISNIRecord s = ISNIRecord.fromFile(dst);
     assertEquals(r.uri, s.uri);
